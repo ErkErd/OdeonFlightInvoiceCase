@@ -1,7 +1,6 @@
 using AutoMapper;
 using OdeonFlightInvoiceCase.Application.DTO;
 using OdeonFlightInvoiceCase.Domain.Entities;
-using OdeonFlightInvoiceCase.Domain.Enums;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 
 namespace OdeonFlightInvoiceCase.Application.Services;
@@ -28,8 +27,6 @@ public class InvoiceMatchService : IInvoiceMatchService
         var removedItems = new List<Reservation>();
         var matchedCount = 0;
         int totalProcessed = 0, successfulRecords = 0, invalidRecords = 0;
-        decimal totalInvoiceAmount = 0;
-
         
         foreach (var line in parsedLines)
         {
@@ -51,7 +48,7 @@ public class InvoiceMatchService : IInvoiceMatchService
                     x.InvoiceNumber = line.InvoiceNumber;
                 });
 
-                await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
+                //await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
                 continue;
             }
 
@@ -99,7 +96,3 @@ public class InvoiceMatchService : IInvoiceMatchService
     }
 }
 
-public interface IInvoiceMatchService
-{
-    Task ProcessInvoiceAsync(string filePath, IInvoiceParser parser);
-}

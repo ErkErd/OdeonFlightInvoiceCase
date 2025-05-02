@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
+using OdeonFlightInvoiceCase.Infrastructure.Services;
 
 namespace OdeonFlightInvoiceCase.Application.Services;
 
@@ -9,15 +11,18 @@ public class InvoiceProcessingService : IHostedService
 {
     private readonly ILogger<InvoiceProcessingService> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly FileSettings _fileSettings;
     private Task? _executingTask;
     private CancellationTokenSource? _stoppingCts;
 
     public InvoiceProcessingService(
         ILogger<InvoiceProcessingService> logger,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IOptions<FileSettings> fileSettings)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _fileSettings = fileSettings.Value;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -52,10 +57,14 @@ public class InvoiceProcessingService : IHostedService
             var invoiceMatchService = scope.ServiceProvider.GetRequiredService<IInvoiceMatchService>();
             var invoiceParser = scope.ServiceProvider.GetRequiredService<IInvoiceParser>();
 
-            // TODO: Implement file watching logic here
-            // For now, we'll just process a single file
-            var filePath = "C:/Users/Erkan/Downloads/Invoice_10407.PDF"; // Replace with actual file path
-            await invoiceMatchService.ProcessInvoiceAsync(filePath, invoiceParser);
+            if (!File.Exists(_fileSettings.InvoiceFilePath))
+            {
+                _logger.LogError($"Invoice file not found at path: {_fileSettings.InvoiceFilePath}");
+                return;
+            }
+
+            _logger.LogInformation($"Processing invoice file: {_fileSettings.InvoiceFilePath}");
+            await invoiceMatchService.ProcessInvoiceAsync(_fileSettings.InvoiceFilePath, invoiceParser);
         }
         catch (Exception ex)
         {

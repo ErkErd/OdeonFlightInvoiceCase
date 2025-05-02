@@ -2,15 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Extensions.Logging;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 using OdeonFlightInvoiceCase.Infrastructure.Services;
 using OdeonFlightInvoiceCase.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using OdeonFlightInvoiceCase.Infrastructure.Repositories;
 using OdeonFlightInvoiceCase.Application.Services;
-
-
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -31,20 +28,12 @@ var builder = Host.CreateDefaultBuilder(args)
         // Register services
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
         
-        // Configure MailSettings
+        // Configure settings
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+        services.Configure<FileSettings>(configuration.GetSection("FileSettings"));
         
-        // Add DbContext
-        var connectionString = configuration.GetConnectionString("PostgreSql");
-        if (string.IsNullOrEmpty(connectionString))
-        {
-            throw new InvalidOperationException("Could not find the connection string 'PostgreSql' in the configuration.");
-        }
-
-        Log.Information($"Using connection string: {connectionString}");
-
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString));
+            options.UseNpgsql(configuration.GetConnectionString("PostgreSql")));
 
         // Register repositories
         services.AddScoped<IReservationRepository, ReservationRepository>();
