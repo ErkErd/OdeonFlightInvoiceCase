@@ -12,7 +12,7 @@ using OdeonFlightInvoiceCase.Infrastructure.Data;
 namespace OdeonFlightInvoiceCase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250501103937_initial")]
+    [Migration("20250501133345_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -57,11 +57,12 @@ namespace OdeonFlightInvoiceCase.Migrations
                     b.Property<DateTime>("FlightDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FlightNo")
-                        .HasColumnType("integer");
+                    b.Property<string>("FlightNo")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int?>("InvoiceNumber")
-                        .HasColumnType("integer");
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

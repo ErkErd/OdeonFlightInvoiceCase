@@ -54,11 +54,12 @@ namespace OdeonFlightInvoiceCase.Migrations
                     b.Property<DateTime>("FlightDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FlightNo")
-                        .HasColumnType("integer");
+                    b.Property<string>("FlightNo")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int?>("InvoiceNumber")
-                        .HasColumnType("integer");
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()

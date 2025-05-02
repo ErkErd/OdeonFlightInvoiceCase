@@ -14,14 +14,20 @@ public class ReservationRepository : IReservationRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Reservation>> GetReservationsByFlightAsync(DateTime flightDate, int flightNo)
+    public async Task<List<Reservation>> GetReservationsByFlightAsync(DateTime flightDate, string flightNo, string carrierCode)
     {
         return await _context.Reservations
-            .Where(r => r.FlightDate.Date == flightDate.Date && r.FlightNo == flightNo)
+            .Where(r => r.FlightDate.Date == flightDate.Date && r.FlightNo == flightNo && r.CarrierCode == carrierCode)
             .ToListAsync();
     }
 
-    public async Task UpdateReservationInvoiceNumberAsync(int reservationId, int invoiceNumber)
+    public async Task UpdateReservationList(List<Reservation> reservationList)
+    {
+        _context.UpdateRange(reservationList);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateReservationInvoiceNumberAsync(int reservationId, string invoiceNumber)
     {
         var reservation = await _context.Reservations.FindAsync(reservationId);
         if (reservation != null)
@@ -31,7 +37,7 @@ public class ReservationRepository : IReservationRepository
         }
     }
 
-    public async Task<bool> IsInvoiceNumberExistsAsync(int invoiceNumber)
+    public async Task<bool> IsInvoiceNumberExistsAsync(string invoiceNumber)
     {
         return await _context.Reservations
             .AnyAsync(r => r.InvoiceNumber == invoiceNumber);

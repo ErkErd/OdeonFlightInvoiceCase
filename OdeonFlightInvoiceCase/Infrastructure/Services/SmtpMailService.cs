@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using OdeonFlightInvoiceCase.Application.DTO;
 using OdeonFlightInvoiceCase.Domain.Entities;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 
@@ -23,9 +24,9 @@ public class SmtpMailService : IMailService
         int unmatchedCount,
         int duplicateCount,
         int differentPriceCount,
-        IEnumerable<ParsedInvoiceLine> unmatchedRecords,
-        IEnumerable<ParsedInvoiceLine> duplicateRecords,
-        IEnumerable<ParsedInvoiceLine> differentPriceRecords)
+        IEnumerable<UnmatchedInvoiceDto> unmatchedRecords,
+        IEnumerable<DuplicateInvoiceDto> duplicateRecords,
+        IEnumerable<DifferentPricedInvoiceDto> differentPriceRecords)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Invoice Processor", _mailSettings.FromEmail));
@@ -37,21 +38,21 @@ public class SmtpMailService : IMailService
             TextBody = GenerateSummaryText(totalProcessed, matchedCount, unmatchedCount, duplicateCount, differentPriceCount)
         };
 
-        // Add CSV attachments
-        if (unmatchedRecords.Any())
-            bodyBuilder.Attachments.Add("unmatched.csv", GenerateCsv(unmatchedRecords));
-        if (duplicateRecords.Any())
-            bodyBuilder.Attachments.Add("duplicate.csv", GenerateCsv(duplicateRecords));
-        if (differentPriceRecords.Any())
-            bodyBuilder.Attachments.Add("different_price.csv", GenerateCsv(differentPriceRecords));
+        //Add CSV attachments
+        //if (unmatchedRecords.Any())
+        //    bodyBuilder.Attachments.Add("unmatched.csv", GenerateCsv(unmatchedRecords));
+        //if (duplicateRecords.Any())
+        //    bodyBuilder.Attachments.Add("duplicate.csv", GenerateCsv(duplicateRecords));
+        //if (differentPriceRecords.Any())
+        //    bodyBuilder.Attachments.Add("different_price.csv", GenerateCsv(differentPriceRecords));
 
         message.Body = bodyBuilder.ToMessageBody();
 
         using var client = new SmtpClient();
-        await client.ConnectAsync(_mailSettings.SmtpServer, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
-        await client.SendAsync(message);
-        await client.DisconnectAsync(true);
+        //await client.ConnectAsync(_mailSettings.SmtpServer, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
+        //await client.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
+        //await client.SendAsync(message);
+        //await client.DisconnectAsync(true);
     }
 
     private string GenerateSummaryText(int totalProcessed, int matchedCount, int unmatchedCount, int duplicateCount, int differentPriceCount)

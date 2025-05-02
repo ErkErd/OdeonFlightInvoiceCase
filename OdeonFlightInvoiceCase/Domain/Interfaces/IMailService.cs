@@ -1,3 +1,4 @@
+using OdeonFlightInvoiceCase.Application.DTO;
 using OdeonFlightInvoiceCase.Domain.Entities;
 
 namespace OdeonFlightInvoiceCase.Domain.Interfaces;
@@ -10,8 +11,8 @@ public interface IMailService
         int unmatchedCount,
         int duplicateCount,
         int differentPriceCount,
-        IEnumerable<ParsedInvoiceLine> unmatchedRecords,
-        IEnumerable<ParsedInvoiceLine> duplicateRecords,
-        IEnumerable<ParsedInvoiceLine> differentPriceRecords
+        IEnumerable<UnmatchedInvoiceDto> unmatchedRecords,
+        IEnumerable<DuplicateInvoiceDto> duplicateRecords,
+        IEnumerable<DifferentPricedInvoiceDto> differentPriceRecords
     );
 } 

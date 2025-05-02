@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OdeonFlightInvoiceCase.Domain.Entities;
 
 namespace OdeonFlightInvoiceCase.Infrastructure.Data;
@@ -14,7 +15,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        ApplyUtcDateTimeConvention(modelBuilder);// date time conflict
         modelBuilder.Entity<Reservation>(entity =>
         {
             entity.ToTable("Reservations");
@@ -62,5 +63,21 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => new { e.FlightDate, e.CarrierCode, e.FlightNo });
             entity.HasIndex(e => e.InvoiceNumber);
         });
+    }
+    private static void ApplyUtcDateTimeConvention(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                {
+                    property.SetValueConverter(new ValueConverter<DateTime, DateTime>(
+                        value => value.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(value, DateTimeKind.Utc) : value.ToUniversalTime(),
+                        value => value
+                    ));
+                }
+            }
+        }
     }
 } 

@@ -55,7 +55,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddScoped<IInvoiceMatchService, InvoiceMatchService>();
 
         // Register AutoMapper
-        services.AddAutoMapper(typeof(Program).Assembly);
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         // Register the main service
         services.AddHostedService<InvoiceProcessingService>();
