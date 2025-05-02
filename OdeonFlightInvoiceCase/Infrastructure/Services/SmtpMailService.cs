@@ -19,14 +19,14 @@ public class SmtpMailService : IMailService
     }
 
     public async Task SendInvoiceProcessingSummaryAsync(
-        int totalProcessed,
-        int matchedCount,
-        int unmatchedCount,
-        int duplicateCount,
-        int differentPriceCount,
-        IEnumerable<UnmatchedInvoiceDto> unmatchedRecords,
-        IEnumerable<DuplicateInvoiceDto> duplicateRecords,
-        IEnumerable<DifferentPricedInvoiceDto> differentPriceRecords)
+    int totalProcessed,
+    int matchedCount,
+    int unmatchedCount,
+    int duplicateCount,
+    int differentPriceCount,
+    IEnumerable<UnmatchedInvoiceDto> unmatchedRecords,
+    IEnumerable<DuplicateInvoiceDto> duplicateRecords,
+    IEnumerable<DifferentPricedInvoiceDto> differentPriceRecords)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Invoice Processor", _mailSettings.FromEmail));
@@ -38,22 +38,24 @@ public class SmtpMailService : IMailService
             TextBody = GenerateSummaryText(totalProcessed, matchedCount, unmatchedCount, duplicateCount, differentPriceCount)
         };
 
-        //Add CSV attachments
-        //if (unmatchedRecords.Any())
-        //    bodyBuilder.Attachments.Add("unmatched.csv", GenerateCsv(unmatchedRecords));
-        //if (duplicateRecords.Any())
-        //    bodyBuilder.Attachments.Add("duplicate.csv", GenerateCsv(duplicateRecords));
-        //if (differentPriceRecords.Any())
-        //    bodyBuilder.Attachments.Add("different_price.csv", GenerateCsv(differentPriceRecords));
+        if (unmatchedRecords.Any())
+            bodyBuilder.Attachments.Add("unmatched.csv", unmatchedRecords.First().GenerateCsv(unmatchedRecords));
+
+        if (duplicateRecords.Any())
+            bodyBuilder.Attachments.Add("duplicate.csv", duplicateRecords.First().GenerateCsv(duplicateRecords));
+
+        if (differentPriceRecords.Any())
+            bodyBuilder.Attachments.Add("different_price.csv", differentPriceRecords.First().GenerateCsv(differentPriceRecords));
 
         message.Body = bodyBuilder.ToMessageBody();
 
         using var client = new SmtpClient();
-        //await client.ConnectAsync(_mailSettings.SmtpServer, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
-        //await client.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
-        //await client.SendAsync(message);
-        //await client.DisconnectAsync(true);
+        await client.ConnectAsync(_mailSettings.SmtpServer, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
+        await client.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(true);
     }
+
 
     private string GenerateSummaryText(int totalProcessed, int matchedCount, int unmatchedCount, int duplicateCount, int differentPriceCount)
     {
@@ -66,19 +68,6 @@ public class SmtpMailService : IMailService
         sb.AppendLine($"Duplicate Invoices: {duplicateCount}");
         sb.AppendLine($"Different Price Records: {differentPriceCount}");
         return sb.ToString();
-    }
-
-    private byte[] GenerateCsv(IEnumerable<ParsedInvoiceLine> records)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine("FlightDate,FlightNumber,PassengerCount,Price,TotalPrice,InvoiceNumber");
-        
-        foreach (var record in records)
-        {
-            sb.AppendLine($"{record.FlightDate:yyyy-MM-dd},{record.FlightNo},{record.PassengerCount},{record.Price},{record.TotalPrice},{record.InvoiceNumber}");
-        }
-
-        return Encoding.UTF8.GetBytes(sb.ToString());
     }
 }
 

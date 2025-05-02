@@ -38,7 +38,7 @@ public class InvoiceMatchService : IInvoiceMatchService
                                                     .Where(x => string.IsNullOrEmpty(x.InvoiceNumber) &&  x.Price == line.Price)
                                                     .Take(line.PassengerCount)
                                                     .ToList();
-            if (invoiceNullSamePriceReservations != null && invoiceNullSamePriceReservations.Count == line.PassengerCount)//linde daki sayý kadar ayný fiyatta faturasýz koltuk var mý
+            if (invoiceNullSamePriceReservations != null && invoiceNullSamePriceReservations.Count == line.PassengerCount)//linede daki sayÄ± kadar aynÄ± fiyatta faturasÄ±z koltuk var mÄ±
             {
                 matchedCount++;
                 //Success conditions are met
@@ -48,7 +48,7 @@ public class InvoiceMatchService : IInvoiceMatchService
                     x.InvoiceNumber = line.InvoiceNumber;
                 });
 
-                //await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
+                await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
                 continue;
             }
 
@@ -56,7 +56,7 @@ public class InvoiceMatchService : IInvoiceMatchService
                                         .Where(x =>x.Price == line.Price)
                                         .Take(line.PassengerCount)
                                         .ToList();
-            if (samePriceReservations != null && samePriceReservations.Count == line.PassengerCount)//invoice null olan yeterince yok. Toplamda ayný fiyattan var mý ? 
+            if (samePriceReservations != null && samePriceReservations.Count == line.PassengerCount)//invoice null olan yeterince yok. Toplamda aynÄ± fiyattan var mÄ± ? 
             {
                 //Duplicate conditions are met
                 duplicateRecords.Add(_mapper.Map<DuplicateInvoiceDto>(line));
