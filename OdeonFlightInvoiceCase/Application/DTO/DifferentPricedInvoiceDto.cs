@@ -35,7 +35,6 @@ namespace OdeonFlightInvoiceCase.Application.DTO
                     EscapeCsv(record.TotalPrice)
                 }));
             }
-
             return Encoding.UTF8.GetBytes(csv.ToString());
         }
     }
