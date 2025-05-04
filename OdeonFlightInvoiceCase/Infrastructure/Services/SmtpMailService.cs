@@ -1,9 +1,7 @@
-using System.Text;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using OdeonFlightInvoiceCase.Application.DTO;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 
 namespace OdeonFlightInvoiceCase.Infrastructure.Services.Models;

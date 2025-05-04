@@ -26,20 +26,4 @@ public class ReservationRepository : IReservationRepository
         _context.UpdateRange(reservationList);
         await _context.SaveChangesAsync();
     }
-
-    public async Task UpdateReservationInvoiceNumberAsync(int reservationId, string invoiceNumber)
-    {
-        var reservation = await _context.Reservations.FindAsync(reservationId);
-        if (reservation != null)
-        {
-            reservation.InvoiceNumber = invoiceNumber;
-            await _context.SaveChangesAsync();
-        }
-    }
-
-    public async Task<bool> IsInvoiceNumberExistsAsync(string invoiceNumber)
-    {
-        return await _context.Reservations
-            .AnyAsync(r => r.InvoiceNumber == invoiceNumber);
-    }
 } 

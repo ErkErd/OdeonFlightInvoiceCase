@@ -1,6 +1,5 @@
 using AutoMapper;
 using OdeonFlightInvoiceCase.Application.DTO;
-using OdeonFlightInvoiceCase.Application.Interfaces;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 
 namespace OdeonFlightInvoiceCase.Application.Services;
@@ -53,7 +52,7 @@ public class InvoiceMatchService : IInvoiceMatchService
                     x.InvoiceNumber = line.InvoiceNumber;
                 });
 
-                //await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
+                await _reservationRepository.UpdateReservationList(invoiceNullSamePriceReservations);
                 continue;
             }
 
@@ -98,7 +97,7 @@ public class InvoiceMatchService : IInvoiceMatchService
             DifferentPriceRecords = differentPriceRecords
         };
 
-        await _notifier.NotifyAsync(result);
+        await _notifier.NotifyAsync(result);//might be event
     }
 }
 

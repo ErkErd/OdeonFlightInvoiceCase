@@ -2,7 +2,6 @@ using System.Text;
 using MimeKit;
 using Microsoft.Extensions.Options;
 using OdeonFlightInvoiceCase.Application.DTO;
-using OdeonFlightInvoiceCase.Application.Interfaces;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 using OdeonFlightInvoiceCase.Infrastructure.Services.Models;
 

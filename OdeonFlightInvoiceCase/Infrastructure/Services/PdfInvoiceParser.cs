@@ -52,7 +52,6 @@ public class PdfInvoiceParser : IInvoiceParser
                     var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length >= 10 && !parts[7].Contains('-'))
                     {
-
                         if (DateTime.TryParse(parts[2], out DateTime flightDate))
                         {
                             if (int.TryParse(parts[7], out int passengerCount))
@@ -61,7 +60,6 @@ public class PdfInvoiceParser : IInvoiceParser
                                 {
                                     if (decimal.TryParse(parts[9], out decimal totalPrice))
                                     {
-
                                         result.Add(new ParsedInvoiceLine
                                         {
                                             FlightDate = flightDate,
@@ -80,7 +78,6 @@ public class PdfInvoiceParser : IInvoiceParser
                 }
             }
         }
-
         return result;
     }
 }

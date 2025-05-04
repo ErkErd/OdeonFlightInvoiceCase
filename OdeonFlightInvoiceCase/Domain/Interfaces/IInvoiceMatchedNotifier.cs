@@ -1,8 +1,8 @@
 using OdeonFlightInvoiceCase.Application.DTO;
 
-namespace OdeonFlightInvoiceCase.Application.Interfaces;
+namespace OdeonFlightInvoiceCase.Domain.Interfaces;
 
 public interface IInvoiceMatchedNotifier
 {
     Task NotifyAsync(MatchInvoiceResultDto result);
-} 
+}

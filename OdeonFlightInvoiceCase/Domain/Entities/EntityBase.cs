@@ -1,5 +1,4 @@
 ﻿
-
 namespace OdeonFlightInvoiceCase.Domain.Entities
 {
     public class EntityBase
