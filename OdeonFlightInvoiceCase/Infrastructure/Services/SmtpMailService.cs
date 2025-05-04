@@ -17,55 +17,13 @@ public class SmtpMailService : IMailService
         _mailSettings = mailSettings.Value;
     }
 
-    public async Task SendInvoiceProcessingSummaryAsync(
-    int totalProcessed,
-    int matchedCount,
-    int unmatchedCount,
-    int duplicateCount,
-    int differentPriceCount,
-    IEnumerable<UnmatchedInvoiceDto> unmatchedRecords,
-    IEnumerable<DuplicateInvoiceDto> duplicateRecords,
-    IEnumerable<DifferentPricedInvoiceDto> differentPriceRecords)
+    public async Task SendEmailAsync(
+    MimeMessage message)
     {
-        var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Invoice Processor", _mailSettings.FromEmail));
-        message.To.Add(new MailboxAddress("Recipient", _mailSettings.ToEmail));
-        message.Subject = "Invoice Processing Summary";
-
-        var bodyBuilder = new BodyBuilder
-        {
-            TextBody = GenerateSummaryText(totalProcessed, matchedCount, unmatchedCount, duplicateCount, differentPriceCount)
-        };
-
-        if (unmatchedRecords.Any())
-            bodyBuilder.Attachments.Add("unmatched.csv", unmatchedRecords.First().GenerateCsv(unmatchedRecords));
-
-        if (duplicateRecords.Any())
-            bodyBuilder.Attachments.Add("duplicate.csv", duplicateRecords.First().GenerateCsv(duplicateRecords));
-
-        if (differentPriceRecords.Any())
-            bodyBuilder.Attachments.Add("different_price.csv", differentPriceRecords.First().GenerateCsv(differentPriceRecords));
-
-        message.Body = bodyBuilder.ToMessageBody();
-
         using var client = new SmtpClient();
         await client.ConnectAsync(_mailSettings.SmtpServer, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
         await client.AuthenticateAsync(_mailSettings.SmtpUsername, _mailSettings.SmtpPassword);
         await client.SendAsync(message);
         await client.DisconnectAsync(true);
-    }
-
-
-    private string GenerateSummaryText(int totalProcessed, int matchedCount, int unmatchedCount, int duplicateCount, int differentPriceCount)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine("Invoice Processing Summary");
-        sb.AppendLine("------------------------");
-        sb.AppendLine($"Total Processed: {totalProcessed}");
-        sb.AppendLine($"Successfully Matched: {matchedCount}");
-        sb.AppendLine($"Unmatched Records: {unmatchedCount}");
-        sb.AppendLine($"Duplicate Invoices: {duplicateCount}");
-        sb.AppendLine($"Different Price Records: {differentPriceCount}");
-        return sb.ToString();
     }
 }

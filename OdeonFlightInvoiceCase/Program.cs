@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using OdeonFlightInvoiceCase.Infrastructure.Repositories;
 using OdeonFlightInvoiceCase.Application.Services;
 using OdeonFlightInvoiceCase.Infrastructure.Services.Models;
+using OdeonFlightInvoiceCase.Application.Interfaces;
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -42,7 +43,9 @@ var builder = Host.CreateDefaultBuilder(args)
         // Register services
         services.AddScoped<IInvoiceParser, PdfInvoiceParser>();
         services.AddScoped<IMailService, SmtpMailService>();
+        services.AddScoped<IInvoiceMatchedNotifier, EmailInvoiceNotifier>();
         services.AddScoped<IInvoiceMatchService, InvoiceMatchService>();
+
 
         // Register AutoMapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
