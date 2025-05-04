@@ -4,10 +4,9 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using OdeonFlightInvoiceCase.Application.DTO;
-using OdeonFlightInvoiceCase.Domain.Entities;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
 
-namespace OdeonFlightInvoiceCase.Infrastructure.Services;
+namespace OdeonFlightInvoiceCase.Infrastructure.Services.Models;
 
 public class SmtpMailService : IMailService
 {
@@ -70,13 +69,3 @@ public class SmtpMailService : IMailService
         return sb.ToString();
     }
 }
-
-public class MailSettings
-{
-    public string SmtpServer { get; set; }
-    public int SmtpPort { get; set; }
-    public string SmtpUsername { get; set; }
-    public string SmtpPassword { get; set; }
-    public string FromEmail { get; set; }
-    public string ToEmail { get; set; }
-} 

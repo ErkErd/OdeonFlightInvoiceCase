@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OdeonFlightInvoiceCase.Domain.Interfaces;
-using OdeonFlightInvoiceCase.Infrastructure.Services;
+using OdeonFlightInvoiceCase.Infrastructure.Services.Models;
 
 namespace OdeonFlightInvoiceCase.Application.Services;
 

@@ -8,6 +8,7 @@ using OdeonFlightInvoiceCase.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using OdeonFlightInvoiceCase.Infrastructure.Repositories;
 using OdeonFlightInvoiceCase.Application.Services;
+using OdeonFlightInvoiceCase.Infrastructure.Services.Models;
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

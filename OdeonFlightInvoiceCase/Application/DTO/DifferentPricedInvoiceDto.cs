@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace OdeonFlightInvoiceCase.Application.DTO
 {
@@ -14,14 +10,17 @@ namespace OdeonFlightInvoiceCase.Application.DTO
         public override byte[] GenerateCsv(IEnumerable<InvoiceBaseDto> records)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("InvoiceNumber" +
-                            ",FlightDate" +
-                            ",CarrierCode" +
-                            ",FlightNumber" +
-                            ",PassengerCount" +
-                            ",PdfPrice" +
-                            ",DbPrice"+
-                            ",PdfTotalPrice");
+            csv.AppendLine(string.Join(",", new[]
+            {
+                "InvoiceNumber",
+                "FlightDate",
+                "CarrierCode",
+                "FlightNumber",
+                "PassengerCount",
+                "PdfPrice",
+                "DbPrice",
+                "PdfTotalPrice"
+            }));
             foreach (var record in records.Cast<DifferentPricedInvoiceDto>())
             {
                 csv.AppendLine(string.Join(",", new[]
